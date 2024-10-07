@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tutorial.AspNetSecurity.RouxAcademy.Models.Student;
 using Tutorial.AspNetSecurity.RouxAcademy.DataServices;
@@ -10,6 +11,7 @@ using Tutorial.AspNetSecurity.RouxAcademy.DataServices;
 
 namespace Tutorial.AspNetSecurity.RouxAcademy.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         private readonly StudentDataContext _db;
@@ -22,15 +24,20 @@ namespace Tutorial.AspNetSecurity.RouxAcademy.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View(new List<CourseGrade>());
+            var userName = User.Identity.Name;
+            var grades = _db.Grades.Where(w => w.StudentUsername == userName).ToList();
+            return View(grades);
         }
+
         [HttpGet]
+        [Authorize(Policy = "Master")]
         public IActionResult AddGrade()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Policy = "Master")]
         public IActionResult AddGrade(CourseGrade model)
         {
             if (!ModelState.IsValid)
@@ -43,7 +50,9 @@ namespace Tutorial.AspNetSecurity.RouxAcademy.Controllers
 
             return RedirectToAction(nameof(StudentController.Index), "Student");
         }
+
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Classifications()
         {
             var classifications = new List<string>()

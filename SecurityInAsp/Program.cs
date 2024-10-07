@@ -44,6 +44,16 @@ namespace SecurityInAsp
 
             #endregion
 
+            #region Authorization
+
+            builder.Services.AddAuthorization(
+                options =>
+            {
+                options.AddPolicy("Master", policy => policy.RequireClaim("FacultyNumber"));
+            });
+
+            #endregion
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

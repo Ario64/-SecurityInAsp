@@ -28,6 +28,6 @@ namespace Tutorial.AspNetSecurity.RouxAcademy.Models.Student
 
         public DateTime CreatedDate { get; set; }
 
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
     }
 }

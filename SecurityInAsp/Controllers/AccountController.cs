@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SecurityInAsp.Models;
 using Tutorial.AspNetSecurity.RouxAcademy.Controllers;
@@ -32,11 +33,14 @@ namespace SecurityInAsp.Controllers
                     Email = register.Email,
                     UserName = register.Email
                 };
-
                 var result = await _userManager.CreateAsync(user, register.Password);
-
                 if (result.Succeeded)
                 {
+                    if (!string.IsNullOrEmpty(register.FacultyNumber))
+                    {
+                        await _userManager.AddClaimAsync(user, new Claim("FacultyNumber", register.FacultyNumber));
+                    }
+
                     return RedirectToAction("Login", "Account");
                 }
                 else
@@ -78,10 +82,10 @@ namespace SecurityInAsp.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("","Invalid login attempt !");
+                    ModelState.AddModelError("", "Invalid login attempt !");
                 }
             }
-          
+
             return View(login);
         }
 
@@ -90,6 +94,12 @@ namespace SecurityInAsp.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

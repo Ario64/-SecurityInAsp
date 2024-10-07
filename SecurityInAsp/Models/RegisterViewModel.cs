@@ -22,4 +22,8 @@ public class RegisterViewModel
     [DisplayName("ConfirmPassword")]
     [Compare("Password")]
     public string ConfirmPassword { get; set; }
+
+    [DisplayName("Faculty Number")]
+    public string FacultyNumber { get; set; }
+
 }
