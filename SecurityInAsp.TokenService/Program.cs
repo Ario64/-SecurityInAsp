@@ -7,6 +7,23 @@ builder.Services.AddIdentityServer().AddDeveloperSigningCredential();
 
 #endregion
 
+#region Add MVC
+
+builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
+#endregion
+
+if (!app.Environment.IsProduction())
+{
+    app.UseExceptionHandler("/Home/Error");
+}
 app.UseIdentityServer();
+app.UseStaticFiles();
+app.UseMvc(route =>
+{
+    route.MapRoute(
+        name: "default",
+        template: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.Run();
